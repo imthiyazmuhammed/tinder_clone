@@ -1,20 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Tindercards.css';
 import TinderCard from 'react-tinder-card';
-import { SwipeableDrawer } from '@material-ui/core';
+import axios from './axios';
+
 function TinderCards() {
-	const [people, setPeople] = useState([
-		{
-			name: 'elon musk',
-			url:
-				'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT30MqCvb_nvhGcj_HMlndYxDYW4VsOZj7TyA&usqp=CAU',
-		},
-		{
-			name: 'jeff bezos',
-			url:
-				'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSxCoOwm-9tAC5E7lsIbw3U89u3_J4CJVquxw&usqp=CAU',
-		},
-	]);
+	const [people, setPeople] = useState([]);
+	useEffect(() => {
+		async function fetchData() {
+			const req = await axios.get('/tinder/cards');
+
+			setPeople(req.data);
+		}
+		fetchData();
+	}, []);
+
 	const swiped = (direction, nameToDelete) => {
 		console.log('removing:' + nameToDelete);
 		//setLastDirection(direction);
@@ -33,7 +32,7 @@ function TinderCards() {
 						onSwipe={(dir) => swiped(dir, person.name)}
 						onCardLeftScreen={() => outOfFrame(person.name)}>
 						<div
-							style={{ backgroundImage: `url(${person.url})` }}
+							style={{ backgroundImage: `url(${person.imgUrl})` }}
 							className="card">
 							<h3>{person.name}</h3>
 						</div>
